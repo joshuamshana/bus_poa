@@ -6,6 +6,6 @@ class PrinterService {
     // call printer plugin
 //    await Future.delayed(Duration(seconds: 5));
     return await MethodChannel('com.smartstock/printer').invokeMethod(
-        'print', {"data": data, "printer": printer, "id": id, "qr": ''});
+        'print', {"data": data, "printer": printer, "id": id, "qr": qr});
   }
 }

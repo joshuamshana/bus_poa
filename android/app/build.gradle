@@ -39,10 +39,11 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.bus_poa"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -60,5 +61,6 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-//    implementation 'com.github.fahamutech:posprinter:v0.1.2'
+    implementation 'com.github.fahamutech:z91smartpos:v0.0.5'
+    implementation 'com.android.support:multidex:1.0.3'
 }

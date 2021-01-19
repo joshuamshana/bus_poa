@@ -11,7 +11,9 @@ void main() {
     BFastUI.module(BusPoaApp()).start(
       initialPath: '/receipts',
       title: "PatPat",
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        
         fontFamily: Config.fontFamily,
         primarySwatch: Config.primaryColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,

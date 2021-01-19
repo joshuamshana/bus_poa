@@ -97,6 +97,7 @@ Widget receiptsFormItem(
             ),
           ),
           subtitle: TextFormField(
+            style: TextStyle(fontSize: 45, color: Colors.white),
             controller: textController,
           )));
 }
