@@ -20,16 +20,17 @@ class ReceiptsService {
     receiptToPrint += "\t\t\t BUS POA" + '\n-------------------------------\n';
 
     // receipt.entries.forEach((element) {
-      receiptToPrint += "Trip Route Name : "+ receipt["trip_route_name"];
-      receiptToPrint += "Depature Date : "+ receipt["assign_date"];
-      receiptToPrint += "Passenger Name : "+ receipt["passenger_name"];
-      receiptToPrint += "Seat No : "+ receipt["seat_no"];
-      receiptToPrint += "Pick up Point: "+ receipt["pickup_trip_location"];
-      receiptToPrint += "Drop Point : "+ receipt["drop_trip_location"];
-      receiptToPrint += "Ticket No : "+ receipt["id_no"];
-      receiptToPrint += "Price: "+ receipt["price"] ;
+      receiptToPrint += "Trip Route Name : "+ receipt["trip_route_name"].toString() + "\n";
+      receiptToPrint += "Depature Date : "+ receipt["assign_date"].toString()  + "\n";
+      receiptToPrint += "Passenger Name : "+ receipt["passenger_name"].toString()  + "\n";
+      receiptToPrint += "Seat No : "+ receipt["seat_numbers"].toString() + "\n";
+      receiptToPrint += "Pick up Point: "+ receipt["pickup_trip_location"].toString()  + "\n";
+      receiptToPrint += "Drop Point : "+ receipt["drop_trip_location"].toString()  + "\n";
+      receiptToPrint += "Ticket No : "+ receipt["id_no"].toString()  + "\n";
+      receiptToPrint += "Price: "+ receipt["price"].toString() + "\n";
+      // receiptToPrint += "Phone No : "+ "\n";
 
-          // element.key.toString() + " : " + element.value.toString() + "\n";
+          // receiptToPrint += element.key.toString() + " : " + element.value.toString() + "\n";
     // });
 
     printerService
