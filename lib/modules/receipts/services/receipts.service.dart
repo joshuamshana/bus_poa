@@ -28,6 +28,7 @@ class ReceiptsService {
       receiptToPrint += "Drop Point : "+ receipt["drop_trip_location"].toString()  + "\n";
       receiptToPrint += "Ticket No : "+ receipt["id_no"].toString()  + "\n";
       receiptToPrint += "Price: "+ receipt["price"].toString() + "\n";
+      receiptToPrint += "TRA VFD: "+ receipt["tra_vfd"].toString() + "\n";
       // receiptToPrint += "Phone No : "+ "\n";
 
           // receiptToPrint += element.key.toString() + " : " + element.value.toString() + "\n";
