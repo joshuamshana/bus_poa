@@ -14,12 +14,13 @@ class ReceiptsService {
   Future printReceipt(Map<String, dynamic> receipt) async {
     String receiptToPrint = "";
     receiptToPrint += '-------------------------------\n';
-    receiptToPrint += (DateTime.now().toUtc().toString()) + '\n-------------------------------\n';
+    receiptToPrint += "TRA VFD: "+ receipt["tra_vfd"].toString() + '\n-------------------------------\n';
     
     receiptToPrint += '-------------------------------\n';
     receiptToPrint += "\t\t\t BUS POA" + '\n-------------------------------\n';
 
     // receipt.entries.forEach((element) {
+      receiptToPrint += "Bus Operator: "+ receipt["owner"].toString() + "\n";
       receiptToPrint += "Trip Route Name : "+ receipt["trip_route_name"].toString() + "\n";
       receiptToPrint += "Depature Date : "+ receipt["assign_date"].toString()  + "\n";
       receiptToPrint += "Passenger Name : "+ receipt["passenger_name"].toString()  + "\n";
@@ -28,7 +29,7 @@ class ReceiptsService {
       receiptToPrint += "Drop Point : "+ receipt["drop_trip_location"].toString()  + "\n";
       receiptToPrint += "Ticket No : "+ receipt["id_no"].toString()  + "\n";
       receiptToPrint += "Price: "+ receipt["price"].toString() + "\n";
-      receiptToPrint += "TRA VFD: "+ receipt["tra_vfd"].toString() + "\n";
+      receiptToPrint += "Registration No: "+ receipt["reg_no"].toString() + "\n";
       // receiptToPrint += "Phone No : "+ "\n";
 
           // receiptToPrint += element.key.toString() + " : " + element.value.toString() + "\n";

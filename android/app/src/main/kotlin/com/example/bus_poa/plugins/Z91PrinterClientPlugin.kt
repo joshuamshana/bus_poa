@@ -1,5 +1,6 @@
 package com.example.bus_poa.plugins
 
+import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.util.Log
@@ -14,10 +15,12 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-internal class Z91PrinterClientPlugin : MethodCallHandler, FlutterPlugin {
+internal class Z91PrinterClientPlugin(private val activity: Activity) : MethodCallHandler, FlutterPlugin {
     private var applicationContext: Context? = null
     private var methodChannel: MethodChannel? = null
     private var eventChannel: EventChannel? = null
+
+
 
     override fun onAttachedToEngine(binding: FlutterPluginBinding) {
         onAttachedToEngine(binding.applicationContext, binding.binaryMessenger)
@@ -54,20 +57,20 @@ internal class Z91PrinterClientPlugin : MethodCallHandler, FlutterPlugin {
         Log.e("Device+++Model", Build.MODEL)
 
         val data: String = call.argument<String>("data")!!
-        Z91Printer.printText(data)
+        Z91Printer.printText(activity, data)
 
         val qr: String = call.argument<String>("qr")!!
         Log.i("**** QR ***", qr.toString());
         Z91Printer.printQr(qr);
-        Z91Printer.printText("\n");
+        Z91Printer.printText(activity,"\n");
         result.success("ok");
     }
 
     companion object {
         /** Plugin registration.  */
-        fun registerWith(registrar: Registrar) {
-            val instance = Z91PrinterClientPlugin();
-            instance.onAttachedToEngine(registrar.context(), registrar.messenger())
-        }
+//        fun registerWith(registrar: Registrar) {
+//            val instance = Z91PrinterClientPlugin();
+//            instance.onAttachedToEngine(registrar.context(), registrar.messenger())
+//        }
     }
 }
