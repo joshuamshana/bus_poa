@@ -62,7 +62,7 @@ internal class Z91PrinterClientPlugin(private val activity: Activity) : MethodCa
         val qr: String = call.argument<String>("qr")!!
         Log.i("**** QR ***", qr.toString());
         Z91Printer.printQr(qr);
-        Z91Printer.printText(activity,"\n");
+//        Z91Printer.printText(activity,"\n");
         result.success("ok");
     }
 

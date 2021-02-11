@@ -15,7 +15,7 @@ class ReceiptsService {
     String receiptToPrint = "";
     receiptToPrint += '-------------------------------\n';
     receiptToPrint += "TRA VFD: "+ receipt["tra_vfd"].toString() + '\n-------------------------------\n';
-    
+    receiptToPrint += "Ticket No : "+ receipt["id_no"].toString()  + "\n";
     receiptToPrint += '-------------------------------\n';
     receiptToPrint += "\t\t\t BUS POA" + '\n-------------------------------\n';
 
@@ -27,9 +27,9 @@ class ReceiptsService {
       receiptToPrint += "Seat No : "+ receipt["seat_numbers"].toString() + "\n";
       receiptToPrint += "Pick up Point: "+ receipt["pickup_trip_location"].toString()  + "\n";
       receiptToPrint += "Drop Point : "+ receipt["drop_trip_location"].toString()  + "\n";
-      receiptToPrint += "Ticket No : "+ receipt["id_no"].toString()  + "\n";
+     
       receiptToPrint += "Price: "+ receipt["price"].toString() + "\n";
-      receiptToPrint += "Registration No: "+ receipt["reg_no"].toString() + "\n";
+      receiptToPrint += "Registration No: "+ receipt["reg_no"].toString();
       // receiptToPrint += "Phone No : "+ "\n";
 
           // receiptToPrint += element.key.toString() + " : " + element.value.toString() + "\n";
