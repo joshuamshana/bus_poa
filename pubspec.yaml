@@ -24,15 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
   
-  bfast: # 3.0.0-beta.8
-    git:
-      url: https://github.com/fahamutech/bfast-flutter
-      ref: 4.x
+  bfast: any
       
-  bfastui: # ^1.0.0-beta.11
-    git:
-      url: https://github.com/fahamutech/bfast-ui-flutter
-      ref: 1.x
+  bfastui: any
 
 
   # The following adds the Cupertino Icons font to your application.

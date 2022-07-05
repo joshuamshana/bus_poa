@@ -7,24 +7,20 @@ import 'package:flutter/material.dart';
 
 void main() {
   _connectWithBFastCloudProject();
-  runApp(
-    BFastUI.module(BusPoaApp()).start(
-      initialPath: '/receipts',
-      title: "PatPat",
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        
-        fontFamily: Config.fontFamily,
-        primarySwatch: Config.primaryColor,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-    ),
-  );
+  runApp(BFastUI.init(
+    module: BusPoaApp(),
+    component: MaterialApp(
+        initialRoute: '/receipts',
+        // title: "PatPat",
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          fontFamily: Config.fontFamily,
+          primarySwatch: Config.primaryColor,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        )),
+  ).start());
 }
 
 void _connectWithBFastCloudProject() {
   BFast.init(AppCredentials('', ''));
 }
-
-
-

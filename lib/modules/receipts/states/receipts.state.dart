@@ -1,9 +1,9 @@
-import 'package:bfastui/adapters/state.dart';
+import 'package:bfastui/adapters/state.adapter.dart';
 import 'package:bus_poa/modules/receipts/services/receipts.service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ReceiptsState extends BFastUIState {
+class ReceiptsState extends StateAdapter {
   final receiptsService = ReceiptsService();
   var loading = false;
 

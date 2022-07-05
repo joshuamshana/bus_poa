@@ -1,10 +1,10 @@
-import 'package:bfastui/adapters/page.dart';
+import 'package:bfastui/adapters/page.adapter.dart';
 import 'package:bfastui/bfastui.dart';
 import 'package:bus_poa/modules/receipts/components/search_receipt.component.dart';
 import 'package:bus_poa/shared/config.dart';
 import 'package:flutter/material.dart';
 
-class PrintReceiptsPage extends BFastUIPage {
+class PrintReceiptsPage extends PageAdapter {
   @override
   Widget build(args) {
     return BFastUI.component().custom((context) => Scaffold(
