@@ -154,9 +154,3 @@ internal class Z91PrinterClientPlugin(private val activity: Activity) : MethodCa
 //        }
     }
 }
-
-//class MyPrintingImagesHelper : PrintingImagesHelper {
-//    override fun getBitmapAsByteArray(bitmap: Bitmap): ByteArray {
-//        return convertBitmapToByteArray(bitmap)
-//    }
-//}
