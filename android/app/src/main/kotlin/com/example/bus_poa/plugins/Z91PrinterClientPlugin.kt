@@ -3,18 +3,25 @@ package com.example.bus_poa.plugins
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.os.Build
 import android.os.Build.*
-import android.util.DisplayMetrics
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat
-import com.dantsu.escposprinter.EscPosPrinter
-import com.dantsu.escposprinter.connection.bluetooth.BluetoothPrintersConnections
-import com.dantsu.escposprinter.textparser.PrinterTextParserImg
-import com.example.bus_poa.MainActivity
-import com.example.bus_poa.R
-import com.example.bus_poa.Z91Printer
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.common.BitMatrix
+import com.google.zxing.qrcode.QRCodeWriter
+import com.mazenrashed.printooth.Printooth
+import com.mazenrashed.printooth.data.printable.ImagePrintable
+import com.mazenrashed.printooth.data.printable.Printable
+import com.mazenrashed.printooth.data.printable.TextPrintable
+import com.mazenrashed.printooth.data.printer.DefaultPrinter
+import com.mazenrashed.printooth.ui.ScanningActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
 import io.flutter.plugin.common.BinaryMessenger
@@ -25,6 +32,11 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 
 internal class Z91PrinterClientPlugin(private val activity: Activity) : MethodCallHandler,
     FlutterPlugin {
+    private val PERMISSION_BLUETOOTH = 12222;
+    private val PERMISSION_BLUETOOTH_ADMIN = 432222;
+    private val PERMISSION_BLUETOOTH_CONNECT = 43989922;
+    private val PERMISSION_BLUETOOTH_SCAN = 4388722;
+
     private var applicationContext: Context? = null
     private var methodChannel: MethodChannel? = null
     private var eventChannel: EventChannel? = null
@@ -61,17 +73,7 @@ internal class Z91PrinterClientPlugin(private val activity: Activity) : MethodCa
         }
     }
 
-    private val PERMISSION_BLUETOOTH = 12222;
-    private val PERMISSION_BLUETOOTH_ADMIN = 432222;
-    private val PERMISSION_BLUETOOTH_CONNECT = 43989922;
-    private val PERMISSION_BLUETOOTH_SCAN = 4388722;
-
     fun print(call: MethodCall, result: MethodChannel.Result) {
-        Log.e("Device+++Model", MODEL)
-        var data: String = call.argument<String>("data")!!
-        data = data.split("\n").joinToString("\n") { "[L]<font>$it</font>" }
-        val qr: String? = call.argument<String>("qr")
-//        if (MODEL == "Q2") {
         if (ContextCompat.checkSelfPermission(
                 activity,
                 Manifest.permission.BLUETOOTH
@@ -92,7 +94,7 @@ internal class Z91PrinterClientPlugin(private val activity: Activity) : MethodCa
                 arrayOf(Manifest.permission.BLUETOOTH_ADMIN),
                 PERMISSION_BLUETOOTH_ADMIN
             );
-        } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
                 activity,
                 Manifest.permission.BLUETOOTH_CONNECT
             ) != PackageManager.PERMISSION_GRANTED
@@ -102,7 +104,7 @@ internal class Z91PrinterClientPlugin(private val activity: Activity) : MethodCa
                 arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
                 PERMISSION_BLUETOOTH_CONNECT
             );
-        } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
                 activity,
                 Manifest.permission.BLUETOOTH_SCAN
             ) != PackageManager.PERMISSION_GRANTED
@@ -113,44 +115,48 @@ internal class Z91PrinterClientPlugin(private val activity: Activity) : MethodCa
                 PERMISSION_BLUETOOTH_SCAN
             );
         } else {
-            // Your code HER
-            Log.e("CONN", BluetoothPrintersConnections.selectFirstPaired()?.isConnected.toString())
-            val printer = EscPosPrinter(
-                BluetoothPrintersConnections.selectFirstPaired(),
-                203, 48f, 5
-            )
-            printer.printFormattedText(
-                "$data\n[C]<qrcode size='20'>$qr</qrcode>".trimIndent()
-            )
-//        } else {
-//            Z91Printer.printText(activity, data)
-//            Log.i("**** QR ***", qr)
-//            Z91Printer.printQr(qr!!)
-//        Z91Printer.printText(activity,"\n");
-//        }
-            result.success("ok");
+            if (!Printooth.hasPairedPrinter()) {
+                startActivityForResult(
+                    activity,
+                    Intent(activity, ScanningActivity::class.java),
+                    ScanningActivity.SCANNING_FOR_PRINTER,
+                    null
+                )
+                return
+            }
+            Log.e("Device+++Model", MODEL)
+            var data: String = call.argument<String>("data")!!
+            data = data.split("\n").joinToString("\n") { it.trim() }
+            val qr: String? = call.argument<String>("qr")
+            val barCodeWriter = QRCodeWriter()
+            val width = 250
+            val height = 250
+            val qrImageBitMatrix: BitMatrix =
+                barCodeWriter.encode(qr ?: "test", BarcodeFormat.QR_CODE, width, height)
+            val bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+            for (x in 0 until width) {
+                for (y in 0 until width) {
+                    bmp.setPixel(x, y, if (qrImageBitMatrix.get(x, y)) Color.BLACK else Color.WHITE)
+                }
+            }
+            val qrImage = ImagePrintable.Builder(bmp).setNewLinesAfter(10).build()
+            val printables = ArrayList<Printable>()
+            val printable = TextPrintable.Builder()
+                .setText(data)
+                .setAlignment(DefaultPrinter.ALIGNMENT_LEFT)
+                .build()
+            printables.add(printable)
+            printables.add(qrImage)
+            Printooth.printer().print(printables)
         }
-    }
+        result.success("ok")
 
-//    fun alpsPrint(){
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH}, MainActivity.PERMISSION_BLUETOOTH);
-//        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, MainActivity.PERMISSION_BLUETOOTH_ADMIN);
-//        } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, MainActivity.PERMISSION_BLUETOOTH_CONNECT);
-//        } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_SCAN}, MainActivity.PERMISSION_BLUETOOTH_SCAN);
-//        } else {
-//            // Your code HERE
-//        }
-//    }
-
-    companion object {
-        /** Plugin registration.  */
-//        fun registerWith(registrar: Registrar) {
-//            val instance = Z91PrinterClientPlugin();
-//            instance.onAttachedToEngine(registrar.context(), registrar.messenger())
 //        }
     }
 }
+
+//class MyPrintingImagesHelper : PrintingImagesHelper {
+//    override fun getBitmapAsByteArray(bitmap: Bitmap): ByteArray {
+//        return convertBitmapToByteArray(bitmap)
+//    }
+//}
