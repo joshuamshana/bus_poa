@@ -21,20 +21,20 @@ class ReceiptsState extends StateAdapter {
         this.loading = false;
         receiptsService.printReceipt(value);
         if (value["id_no"] == null) {
-          showError(context);
+          showError(context,'');
         }
         
       }).catchError((err) {
         print(err);
         this.loading = false;
-        showError(context);
+        showError(context,err);
       });
     }
   }
 
-  showError(BuildContext context) {
-    ScaffoldMessenger.maybeOf(context).showSnackBar(const SnackBar(
-      content: Text('Failed to get receipt details'),
+  showError(BuildContext context,String err) {
+    ScaffoldMessenger.maybeOf(context).showSnackBar( SnackBar(
+      content: Text('Failed to get receipt details. $err'),
     ));
   }
 }
