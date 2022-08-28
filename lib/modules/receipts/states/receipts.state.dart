@@ -1,6 +1,5 @@
 import 'package:bfastui/adapters/state.adapter.dart';
 import 'package:bus_poa/modules/receipts/services/receipts.service.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ReceiptsState extends StateAdapter {
@@ -12,22 +11,28 @@ class ReceiptsState extends StateAdapter {
   };
 
   fetchReceiptAndPrint(BuildContext context) async {
-    this.loading = true;
+    loading = true;
     var receipt = textFieldControllers["receiptNo"].text;
-
+    notifyListeners();
     if (receipt != null) {
-      receiptsService.fetchReceiptDetails(receipt).then((value) {
-
-        this.loading = false;
-        receiptsService.printReceipt(value);
+      receiptsService.fetchReceiptDetails(receipt).then((value) async {
         if (value["id_no"] == null) {
           showError(context);
+        }else{
+          try{
+            await receiptsService.printReceipt(value);
+          }catch(e){
+            print(e);
+            showError(context);
+          }
         }
-        
       }).catchError((err) {
         print(err);
-        this.loading = false;
+        loading = false;
         showError(context);
+      }).whenComplete(() {
+        loading = false;
+        notifyListeners();
       });
     }
   }

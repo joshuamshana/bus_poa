@@ -3,101 +3,75 @@ import 'package:bus_poa/modules/receipts/states/receipts.state.dart';
 import 'package:bus_poa/shared/config.dart';
 import 'package:flutter/material.dart';
 
-Widget printReceiptButton(BuildContext context) {
-  return Container(
-    margin:
-        EdgeInsets.fromLTRB(0, MediaQuery.of(context).size.height / 3, 0, 0),
-    width: MediaQuery.of(context).size.width / 1.3,
-    height: 40,
-    child: RaisedButton(
-      // elevation: 8,
-      color: Colors.green,
-      onPressed: () {
-        print("Printing Receipt");
-      },
-      child: Center(
-        child: Text(
-          "Print Receipt",
-          style: TextStyle(color: Colors.white, fontSize: 20),
-        ),
-      ),
-    ),
-  );
-}
+Widget submitReceipt(BuildContext context) => BFastUI.component()
+    .consumer<ReceiptsState>((context, receiptsState) => Container(
+        padding: EdgeInsets.fromLTRB(0, 24, 0, 24),
+        width: MediaQuery.of(context).size.width,
+        // height: 40,
+        child: receiptsState.loading
+            ? Center(
+                child: CircularProgressIndicator(backgroundColor: Colors.white))
+            : Container(
+                height: 48,
+                child: TextButton(
+                    // color: Colors.green,
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.green)),
+                    onPressed: () {
+                      receiptsState.fetchReceiptAndPrint(context);
+                    },
+                    child: Text("PRINT RECEIPT",
+                        style: TextStyle(color: Colors.white, fontSize: 20))),
+              )));
 
-Widget submitReceipt(BuildContext context) {
-  return BFastUI.component()
-      .consumer<ReceiptsState>((context, receiptsState) => Container(
-            margin: EdgeInsets.fromLTRB(0, 90, 0, 0),
-            width: MediaQuery.of(context).size.width / 1.5,
-            height: 40,
-            child: RaisedButton(
-              // elevation: 8,
-              color: Colors.green,
-              onPressed: () {
-                receiptsState.fetchReceiptAndPrint(context);
-              },
-              child: Center(
-                child: Text(
-                  "PRINT RECEIPT",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
+Widget receiptsForm() => BFastUI.component()
+    .consumer<ReceiptsState>((context, receiptsState) => Container(
+        padding: EdgeInsets.all(15),
+        child: Center(
+            child: Column(children: [
+          Container(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              child: Text("BUS POA",
+                  style: TextStyle(color: Config.primaryColor, fontSize: 45))),
+          receiptsFormItem(
+            title: "Receipt Number",
+            textController: receiptsState.textFieldControllers["receiptNo"],
+          ),
+          submitReceipt(context)
+        ]))));
+
+Widget receiptsFormItem({
+  IconData iconData,
+  String title,
+  TextEditingController textController,
+}) =>
+    Padding(
+        padding: EdgeInsets.fromLTRB(0, 0, 0, 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+              child: Text(
+                title,
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
             ),
-          ));
-}
-
-Widget receiptsForm() {
-  return BFastUI.component().consumer<ReceiptsState>((context, receiptsState) =>
-      Container(
-          margin: EdgeInsets.fromLTRB(
-              0, MediaQuery.of(context).size.height / 15, 0, 0),
-          padding: EdgeInsets.all(15),
-          child: Form(
-              child: Center(
-                  child: Column(
-            children: [
-              Center(
-                  child: Container(
-                      margin: EdgeInsets.fromLTRB(0, 0, 0, 50),
-                      child: Text("BUS POA",
-                          style: TextStyle(
-                            color: Config.primaryColor,
-                            fontSize: 45,
-                          )))),
-              receiptsFormItem(
-                  iconData: Icons.person,
-                  title: "Receipt Number",
-                  textController:
-                      receiptsState.textFieldControllers["receiptNo"]),
-              submitReceipt(context),
-              Container(
-                margin: EdgeInsets.fromLTRB(0, 60, 0, 0),
-                  child:
-                      receiptsState.loading ? CircularProgressIndicator(backgroundColor: Colors.green,) : null)
-            ],
-          )))));
-}
-
-Widget receiptsFormItem(
-    {IconData iconData, String title, TextEditingController textController}) {
-  return Padding(
-      padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-      child: ListTile(
-          leading: Icon(
-            iconData,
-            size: 40,
-            color: Config.primaryColor,
-          ),
-          title: Text(
-            title,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              padding: EdgeInsets.all(8),
+              child: TextField(
+                style: TextStyle(fontSize: 45),
+                controller: textController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(border: InputBorder.none),
+              ),
             ),
-          ),
-          subtitle: TextFormField(
-            style: TextStyle(fontSize: 45, color: Colors.white),
-            controller: textController,
-          )));
-}
+          ],
+        ));

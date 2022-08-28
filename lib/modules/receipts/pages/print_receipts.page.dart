@@ -11,7 +11,7 @@ class PrintReceiptsPage extends PageAdapter {
         backgroundColor: Config.primaryColor,
         body: ListView(children: [
           Container(
-            margin: EdgeInsets.fromLTRB(0, 150, 0, 20),
+            margin: EdgeInsets.fromLTRB(0, 24, 0, 0),
             decoration: BoxDecoration(color: Config.primaryColor),
             child: Center(
               child: Text(
